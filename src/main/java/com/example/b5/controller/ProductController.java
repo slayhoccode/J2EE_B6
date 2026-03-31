@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.b5.model.Product;
 import com.example.b5.service.CategoryService;
 import com.example.b5.service.ProductService;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -22,9 +23,28 @@ public class ProductController {
 
     // Hiển thị danh sách
     @GetMapping
-    public String listProducts(Model model) {
-        List<Product> productList = productService.getAllProducts();
-        model.addAttribute("products", productList);
+    public String listProducts(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "sortField", defaultValue = "id") String sortField,
+            @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir,
+            Model model) {
+        
+        int pageSize = 5; // Số sản phẩm mỗi trang
+        Page<Product> productPage = productService.findPaginated(page, pageSize, keyword, sortField, sortDir, categoryId);
+        
+        model.addAttribute("products", productPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", productPage.getTotalPages());
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("sortField", sortField);
+        model.addAttribute("sortDir", sortDir);
+        model.addAttribute("reverseSortDir", sortDir.equals("asc") ? "desc" : "asc");
+        
+        model.addAttribute("categories", categoryService.getAllCategories());
+        
         return "product/list";
     }
 
