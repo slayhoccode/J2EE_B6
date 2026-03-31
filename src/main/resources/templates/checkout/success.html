@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Success</title>
+</head>
+<body>
+    <div layout:fragment="content" class="container body-content">
+        <div class="alert alert-success mt-4">
+            <h2>Order Placed Successfully!</h2>
+            <p>Thank you, <span th:text="${order.customerName}"></span>, for your purchase.</p>
+            <p>Order ID: <span th:text="${order.id}"></span></p>
+            <p>Total Amount: <span th:text="${order.totalAmount}"></span></p>
+            <p>Order Date: <span th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></span></p>
+            <hr>
+            <a th:href="@{/products}" class="btn btn-primary">Back to Home</a>
+        </div>
+    </div>
+</body>
+</html>
